@@ -9,15 +9,16 @@ export default function TabsLayout() {
                     title: 'Home'
             }} />
             <Tabs.Screen 
-                name="profile"
+                name="StickerSmash"
                 options={{
-                    title: 'Profile'
+                    title: 'StickerSmash'
             }} />
             <Tabs.Screen 
                 name="settings"
                 options={{
                     title: 'Settings'
             }} />
+            
             
         </Tabs>
     );

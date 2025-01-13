@@ -11,6 +11,7 @@ const App = () => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [authenticated, setAuthenticated] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState('');
   const auth = getAuth(app);
   const router = useRouter()
 
@@ -29,7 +30,8 @@ const App = () => {
         
     }).catch((e) => {
       console.log(e);
-      
+      setErrorMessage('Emailul sau parola sunt greșite. Te rugăm să încerci din nou.');
+      alert('Emailul sau parola sunt greșite. Te rugăm să încerci din nou.');
     })
   }
 

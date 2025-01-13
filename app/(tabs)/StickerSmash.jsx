@@ -8,15 +8,15 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as MediaLibrary from 'expo-media-library';
 import { captureRef } from 'react-native-view-shot';
 
-import ImageViewer from '../components/ImageViewer';
-import Button from '../components/Button';
-import IconButton from '../components/IconButton';
-import EmojiPicker from '../components/EmojiPicker';
-import EmojiList from '../components/EmojiList';
-import EmojiSticker from '../components/EmojiSticker';
-import CircleButton from '../components/CircleButton';
+import ImageViewer from '../../components/ImageViewer';
+import Button from '../../components/Button';
+import IconButton from '../../components/IconButton';
+import EmojiPicker from '../../components/EmojiPicker';
+import EmojiList from '../../components/EmojiList';
+import EmojiSticker from '../../components/EmojiSticker';
+import CircleButton from '../../components/CircleButton';
 
-const PlaceholderImage = require('../assets/images/MainImage.png');
+const PlaceholderImage = require('../../assets/images/MainImage.png');
 
 export default function Game() {
     const [selectedImage, setSelectedImage] = useState(undefined);

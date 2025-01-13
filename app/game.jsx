@@ -4,10 +4,12 @@ import { categories } from './data/categories'; // importă fișierul cu categor
 import { ScrollView } from 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler'; // importă GestureHandlerRootView
 import Svg, { Path } from 'react-native-svg';
+import { useLocalSearchParams } from 'expo-router';
+
 
 
 export default function Game() {
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const { category } = useLocalSearchParams(); // Categoria primită din Home
   const [selectedObject, setSelectedObject] = useState('');
   const [image, setImage] = useState('');
   const {width, height} = useWindowDimensions();
@@ -19,24 +21,15 @@ export default function Game() {
   const startX = useRef(0);
   const startY = useRef(0);
 
-  // Funcție care selectează un obiect aleatoriu dintr-o categorie
-  const getRandomObject = (category) => {
-    const objects = categories[category];
-    const randomIndex = Math.floor(Math.random() * objects.length);
-    return objects[randomIndex];
-  };
-
   useEffect(() => {
-    // Selectează aleatoriu o categorie
-    const categoryKeys = Object.keys(categories);
-    const randomCategory = categoryKeys[Math.floor(Math.random() * categoryKeys.length)];
-
-    setSelectedCategory(randomCategory);
-    const object = getRandomObject(randomCategory);
-    setSelectedObject(object);
-    // Aici ar trebui să pui logica pentru a obține imaginea asociată
-    setImage(`path_to_image/${object}.jpg`); // Exemplu de imagine
-  }, []);
+    if (category && categories[category]) {
+      const objects = categories[category];
+      const randomIndex = Math.floor(Math.random() * objects.length);
+      const object = objects[randomIndex];
+      setSelectedObject(object);
+      setImage(`path_to_image/${object}.jpg`); // Adaptează calea pentru imagini
+    }
+  }, [category]);
 
   const handleTouchStart = (e) => {
     const { locationX, locationY } = e.nativeEvent;
@@ -74,6 +67,14 @@ export default function Game() {
     }
 };
 
+
+if (!category) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.error}>Eroare: Categoria nu a fost selectată!</Text>
+      </View>
+    );
+  }
 
 
   return (

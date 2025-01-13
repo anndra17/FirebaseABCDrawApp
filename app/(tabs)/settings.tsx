@@ -8,6 +8,8 @@ export default function Settings() {
     const [newPassword, setNewPassword] = useState('');
     const auth = getAuth(app);
     const router = useRouter();
+    const user = auth.currentUser;
+
 
     // Logout handler
     const handleLogout = () => {
@@ -47,10 +49,14 @@ export default function Settings() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Settings Page</Text>
-
             {/* Schimbare parolă */}
             <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Email adress</Text>
+                {user ? (
+                    <Text style={styles.email}>{user.email}</Text>
+                ) : (
+                    <Text style={styles.error}>No user is logged in.</Text>
+                )}
                 <Text style={styles.sectionTitle}>Change Password</Text>
                 <TextInput
                     style={styles.input}
@@ -67,7 +73,7 @@ export default function Settings() {
             {/* Logout */}
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Logout</Text>
-                <TouchableOpacity style={styles.button} onPress={handleLogout}>
+                <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
                     <Text style={styles.buttonText}>Logout</Text>
                 </TouchableOpacity>
             </View>
@@ -81,11 +87,7 @@ const styles = StyleSheet.create({
         padding: 20,
         backgroundColor: '#f5f5f5',
     },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
+    
     section: {
         marginBottom: 30,
     },
@@ -109,9 +111,24 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         alignItems: 'center',
     },
+    logoutButton: {
+        backgroundColor: 'red',
+        paddingVertical: 10,
+        borderRadius: 8,
+        alignItems: 'center',
+    },
     buttonText: {
         color: 'white',
         fontWeight: 'bold',
         fontSize: 16,
+    },
+    email: {
+        fontSize: 18,
+        color: '#333',
+        paddingBottom:20
+    },
+    error: {
+        fontSize: 16,
+        color: 'red',
     },
 });
