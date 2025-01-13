@@ -1,15 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View,SafeAreaView, Text, StyleSheet, Image, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { categories } from './data/categories'; // importă fișierul cu categoriile
 import { ScrollView } from 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler'; // importă GestureHandlerRootView
+import Svg, { Path } from 'react-native-svg';
 
 
-const Game = () => {
+export default function Game() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedObject, setSelectedObject] = useState('');
   const [image, setImage] = useState('');
+  const {width, height} = useWindowDimensions();
+  const [paths, setPaths] = useState([]); // Traseele desenate
+  const [currentPath, setCurrentPath] = useState(''); // Traseul curent
   
+
+  // Referință pentru a detecta mișcările
+  const startX = useRef(0);
+  const startY = useRef(0);
+
   // Funcție care selectează un obiect aleatoriu dintr-o categorie
   const getRandomObject = (category) => {
     const objects = categories[category];
@@ -29,22 +38,66 @@ const Game = () => {
     setImage(`path_to_image/${object}.jpg`); // Exemplu de imagine
   }, []);
 
+  const handleTouchStart = (e) => {
+    const { locationX, locationY } = e.nativeEvent;
+    startX.current = locationX;
+    startY.current = locationY;
+    setCurrentPath(`M${locationX},${locationY}`);
+  };
+
+  const handleTouchMove = (e) => {
+    const { locationX, locationY } = e.nativeEvent;
+    setCurrentPath((prev) => `${prev} L${locationX},${locationY}`);
+  };
+
+  const handleTouchEnd = () => {
+    setPaths((prevPaths) => [...prevPaths, currentPath]);
+    setCurrentPath('');
+  };
+
+  const clearCanvas = () => {
+    setPaths([]);
+  };
+
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}> 
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Învăță să scrii cuvântul:</Text>
-      
-      {image && (
-        <Image source={{ uri: image }} style={styles.image} />
-      )}
-      
-      <Text style={styles.objectName}>{selectedObject}</Text>
-      
-      <TouchableOpacity style={styles.drawingBox}>
-        <Text style={styles.drawingText}>Desenează cuvântul cu degetul aici!</Text>
-        {/* Aici poți adăuga un component de desen */}
-      </TouchableOpacity>
-    </ScrollView>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Învăță să scrii cuvântul:</Text>
+
+        {image && <Image source={{ uri: image }} style={styles.image} />}
+        <Text style={styles.objectName}>{selectedObject}</Text>
+
+        {/* Canvas pentru desen */}
+        <SafeAreaView style={styles.drawingBox}>
+          <Svg
+            style={{ width: width - 40, height: 200 }}
+            onStartShouldSetResponder={() => true}
+            onResponderGrant={handleTouchStart}
+            onResponderMove={handleTouchMove}
+            onResponderRelease={handleTouchEnd}
+          >
+            {/* Desenează toate traseele existente */}
+            {paths.map((path, index) => (
+              <Path
+                key={index}
+                d={path}
+                stroke="black"
+                strokeWidth={2}
+                fill="none"
+              />
+            ))}
+            {/* Traseul curent */}
+            {currentPath !== '' && (
+              <Path d={currentPath} stroke="black" strokeWidth={2} fill="none" />
+            )}
+          </Svg>
+        </SafeAreaView>
+
+        {/* Buton pentru curățare */}
+        <TouchableOpacity onPress={clearCanvas} style={styles.clearButton}>
+          <Text style={styles.clearButtonText}>Șterge</Text>
+        </TouchableOpacity>
+      </View>
     </GestureHandlerRootView>
   );
 };
@@ -78,14 +131,17 @@ const styles = StyleSheet.create({
     borderColor: '#bcbcbc',
     borderWidth: 1,
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
     marginBottom: 20,
   },
-  drawingText: {
-    fontSize: 18,
-    color: '#888',
+  clearButton: {
+    backgroundColor: '#ff5757',
+    padding: 10,
+    borderRadius: 5,
+  },
+  clearButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
-
-export default Game;
