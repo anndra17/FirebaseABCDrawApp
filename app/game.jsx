@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View,SafeAreaView, Text, StyleSheet, Image, TouchableOpacity, useWindowDimensions } from 'react-native';
+import { Button,View,SafeAreaView, Text, StyleSheet, Image, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { categories } from './data/categories'; // importă fișierul cu categoriile
 import { ScrollView } from 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler'; // importă GestureHandlerRootView
@@ -59,6 +59,23 @@ export default function Game() {
     setPaths([]);
   };
 
+  const saveCanvasImage = () => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+        const image = canvas.toDataURL("image/png");
+        
+        // Creează un link pentru descărcare
+        const link = document.createElement("a");
+        link.href = image;
+        link.download = "drawing.png";
+        link.click();
+
+        console.log("Image saved:", image); // Pentru a trimite imaginea la model
+    }
+};
+
+
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -97,6 +114,12 @@ export default function Game() {
         <TouchableOpacity onPress={clearCanvas} style={styles.clearButton}>
           <Text style={styles.clearButtonText}>Șterge</Text>
         </TouchableOpacity>
+        
+        <TouchableOpacity onPress={saveCanvasImage} style={styles.clearButton}>
+          <Text style={styles.clearButtonText}>Verifica</Text>
+        </TouchableOpacity>
+
+
       </View>
     </GestureHandlerRootView>
   );

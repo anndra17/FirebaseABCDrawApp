@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-nativ
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import app from './firebase/firebaseConfig';
 import * as SecureStore from 'expo-secure-store';
-import BottomSheet from './BottomSheet';
+import BottomSheet from '../components/BottomSheet';
 import { useRouter } from 'expo-router';
 
 const App = () => {
