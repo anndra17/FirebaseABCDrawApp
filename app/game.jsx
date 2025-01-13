@@ -27,7 +27,7 @@ export default function Game() {
       const randomIndex = Math.floor(Math.random() * objects.length);
       const object = objects[randomIndex];
       setSelectedObject(object);
-      setImage(`path_to_image/${object}.jpg`); // Adaptează calea pentru imagini
+      setImage(`../assets/${category}/${object}.png`); // Adaptează calea pentru imagini
     }
   }, [category]);
 
