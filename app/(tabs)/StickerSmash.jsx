@@ -77,7 +77,10 @@ export default function Game() {
       <GestureHandlerRootView style={styles.container}>
         <View style={styles.imageContainer}>
           <View ref={imageRef} collapsable={false}>
-            <ImageViewer imgSource={PlaceholderImage} selectedImage={selectedImage} />
+          <ImageViewer 
+              imgSource={selectedImage ? { uri: selectedImage } : PlaceholderImage}
+              selectedImage={selectedImage}
+            />
             {pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />}
           </View>
         </View>

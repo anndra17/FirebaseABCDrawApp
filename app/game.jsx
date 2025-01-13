@@ -22,14 +22,17 @@ export default function Game() {
   const startY = useRef(0);
 
   useEffect(() => {
-    if (category && categories[category]) {
+    if (category && categories[category]?.length > 0) {
       const objects = categories[category];
       const randomIndex = Math.floor(Math.random() * objects.length);
       const object = objects[randomIndex];
       setSelectedObject(object);
-      setImage(`../assets/${category}/${object}.png`); // Adaptează calea pentru imagini
+      setImage(object.imagine);
+    } else {
+      setSelectedObject(null);
     }
   }, [category]);
+  
 
   const handleTouchStart = (e) => {
     const { locationX, locationY } = e.nativeEvent;
@@ -83,7 +86,7 @@ if (!category) {
         <Text style={styles.title}>Învăță să scrii cuvântul:</Text>
 
         {image && <Image source={{ uri: image }} style={styles.image} />}
-        <Text style={styles.objectName}>{selectedObject}</Text>
+        <Text style={styles.objectName}>{selectedObject.nume?.toUpperCase()}</Text>
 
         {/* Canvas pentru desen */}
         <SafeAreaView style={styles.drawingBox}>
@@ -139,8 +142,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   image: {
-    width: 200,
-    height: 200,
+    width: '50%', // 50% din lățimea ecranului
+    height:'25%', // 25% din înălțimea ecranului
     resizeMode: 'contain',
     marginBottom: 20,
   },
