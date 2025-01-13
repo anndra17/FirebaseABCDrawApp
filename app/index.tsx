@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { app } from './firebaseConfig';
+import app from './firebase/firebaseConfig';
 import * as SecureStore from 'expo-secure-store';
 import BottomSheet from './BottomSheet';
 import { useRouter } from 'expo-router';
@@ -25,7 +25,7 @@ const App = () => {
         await SecureStore.setItemAsync('user', JSON.stringify(user));
         setAuthenticated(true);
 
-        router.push('/(tabs)/home');
+        router.replace('/(tabs)/home');
         
     }).catch((e) => {
       console.log(e);
