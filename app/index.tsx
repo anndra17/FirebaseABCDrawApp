@@ -4,6 +4,7 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { app } from './firebaseConfig';
 import * as SecureStore from 'expo-secure-store';
 import BottomSheet from './BottomSheet';
+import { useRouter } from 'expo-router';
 
 const App = () => {
   const [status, setStatus] = React.useState(false);
@@ -11,6 +12,7 @@ const App = () => {
   const [password, setPassword] = React.useState('');
   const [authenticated, setAuthenticated] = React.useState(false);
   const auth = getAuth(app);
+  const router = useRouter()
 
   const handleLogin = () => {
     if(email == '' || password == ''){
@@ -22,6 +24,8 @@ const App = () => {
 
         await SecureStore.setItemAsync('user', JSON.stringify(user));
         setAuthenticated(true);
+
+        router.push('/(tabs)/home');
         
     }).catch((e) => {
       console.log(e);
@@ -32,12 +36,7 @@ const App = () => {
 
   return(
     <View style={ styles.container }>
-      {
-        (authenticated)
-        ?
-          <View><Text style={{ fontSize: 25, fontWeight: 'bold' }}>Welcome! you are logged In</Text></View>
       
-        :
         <>
         <Text style={{ fontSize: 25, fontWeight: 'bold' }}>Login Here</Text>
         <View style={{ marginTop: 20, width: '100%', paddingHorizontal: 25 }}>
@@ -67,10 +66,6 @@ const App = () => {
           <Text>Create Account</Text>
         </TouchableOpacity>
       </>
-      }
-     
-
-
       { status && <BottomSheet setStatus={ setStatus } /> }
 
       
