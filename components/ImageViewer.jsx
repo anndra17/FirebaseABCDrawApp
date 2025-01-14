@@ -2,17 +2,17 @@ import { StyleSheet } from "react-native";
 import { Image } from "expo-image";
 
 export default function ImageViewer({ imgSource, selectedImage, style }) {
-    const imageSource = selectedImage ? {uri: selectedImage} : imgSource;
-    const selectedStyle = selectedImage ? styles.image : style;
+    const imageSource = selectedImage 
+        ? { uri: selectedImage } 
+        : imgSource; 
 
+    return <Image source={imageSource} style={style? style :styles.image} />;
+}
 
-    return <Image source={imageSource} style={selectedStyle} />;
-  }
-  
-  const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     image: {
         width: 320,
         height: 440,
-        borderRadius: 18
+        borderRadius: 18,
     },
-  });
+});

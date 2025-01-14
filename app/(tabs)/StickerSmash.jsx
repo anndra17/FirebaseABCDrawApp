@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 
 
-import { View, StyleSheet, Platform } from 'react-native';
+import { View,Text, StyleSheet, Platform,TouchableOpacity, ImageBackground  } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ImageSource } from 'expo-image';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -17,8 +17,10 @@ import EmojiSticker from '../../components/EmojiSticker';
 import CircleButton from '../../components/CircleButton';
 
 const PlaceholderImage = require('../../assets/images/MainImage.png');
+const BackgroundImage = require('../../assets/images/appBackground.jpg');
 
-export default function Game() {
+
+export default function StickerSmash() {
     const [selectedImage, setSelectedImage] = useState(undefined);
     const [showAppOptions, setShowAppOptions] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -74,7 +76,9 @@ export default function Game() {
     };
   
     return (
+      <ImageBackground source={BackgroundImage} style={styles.background}>
       <GestureHandlerRootView style={styles.container}>
+
         <View style={styles.imageContainer}>
           <View ref={imageRef} collapsable={false}>
           <ImageViewer 
@@ -95,20 +99,23 @@ export default function Game() {
         ) : (
           <View style={styles.footerContainer}>
             <Button theme="primary" label="Choose a photo" onPress={pickImageAsync} />
-            <Button label="Use this photo" onPress={() => setShowAppOptions(true)} />
+            <TouchableOpacity onPress={() => setShowAppOptions(true)} style={{marginTop:10}}>
+                  <Text>Use this photo</Text>
+            </TouchableOpacity>
           </View>
         )}
         <EmojiPicker isVisible={isModalVisible} onClose={onModalClose}>
           <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose} />
         </EmojiPicker>
       </GestureHandlerRootView>
+      </ImageBackground>
+
     );
   }
   
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#25292e',
       alignItems: 'center',
     },
     imageContainer: {
@@ -125,5 +132,9 @@ export default function Game() {
     optionsRow: {
       alignItems: 'center',
       flexDirection: 'row',
+    },
+    background: {
+      flex: 1,
+      resizeMode: 'cover',
     },
   });

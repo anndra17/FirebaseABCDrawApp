@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, ImageBackground, StyleSheet, TextInput, Alert } from 'react-native';
 import { getAuth, signOut, updatePassword } from 'firebase/auth';
 import app from '../firebase/firebaseConfig';
 import { useRouter } from 'expo-router';
+
+const backgroundImage = require('../../assets/images/appBackground.jpg');
+
 
 export default function Settings() {
     const [newPassword, setNewPassword] = useState('');
@@ -48,6 +51,8 @@ export default function Settings() {
     };
 
     return (
+        <ImageBackground source={backgroundImage} style={styles.background}>
+
         <View style={styles.container}>
             {/* Schimbare parolă */}
             <View style={styles.section}>
@@ -78,6 +83,7 @@ export default function Settings() {
                 </TouchableOpacity>
             </View>
         </View>
+        </ImageBackground>
     );
 }
 
@@ -85,11 +91,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        backgroundColor: '#f5f5f5',
     },
-    
     section: {
         marginBottom: 30,
+        backgroundColor: 'white'
     },
     sectionTitle: {
         fontSize: 18,
@@ -125,10 +130,15 @@ const styles = StyleSheet.create({
     email: {
         fontSize: 18,
         color: '#333',
-        paddingBottom:20
+        marginBottom:20,
     },
     error: {
         fontSize: 16,
         color: 'red',
     },
+    background: {
+        flex: 1,
+        resizeMode: 'cover', // Asigură afișarea completă
+        justifyContent: 'center',
+      },
 });

@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet,ImageBackground, TouchableOpacity, TextInput } from 'react-native';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import app from './firebase/firebaseConfig';
 import * as SecureStore from 'expo-secure-store';
 import BottomSheet from '../components/BottomSheet';
 import { useRouter } from 'expo-router';
+
+const backgroundImage = require('../assets/images/appBackground.jpg');
 
 const App = () => {
   const [status, setStatus] = React.useState(false);
@@ -37,6 +39,9 @@ const App = () => {
 
 
   return(
+    <ImageBackground source={backgroundImage} style={styles.background}>
+     
+    
     <View style={ styles.container }>
       
         <>
@@ -72,6 +77,7 @@ const App = () => {
 
       
     </View>
+    </ImageBackground>
   )
 }
 export default App;
@@ -98,6 +104,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#bcbcbc',
     paddingHorizontal: 15,
-    marginBottom: 10
+    marginBottom: 10,
+    backgroundColor: 'white'
+  },
+  background: {
+    flex: 1,
+    resizeMode: 'cover', // Asigură afișarea completă
+    justifyContent: 'center',
   }
 })

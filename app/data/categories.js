@@ -44,7 +44,7 @@ export const categories = {
         { nume: 'Supereroi în pijamale', imagine: '../../assets/images/desene_animate/Supereroi în pijamale.png' }
     ],
     mancaruri: [
-        { nume: 'Pizza', imagine: '../../assets/images/mancaruri/Pizza.png' },
+        { nume: 'Pizza', imagine: require('../../assets/images/mancaruri/Pizza.png') },
         { nume: 'Clătite', imagine: '../../assets/images/mancaruri/Clătite.png' },
         { nume: 'Paste', imagine: '../../assets/images/mancaruri/Paste.png' },
         { nume: 'Salată', imagine: '../../assets/images/mancaruri/Salată.png' },

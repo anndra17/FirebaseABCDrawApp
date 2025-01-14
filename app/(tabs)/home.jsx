@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Link, useRouter } from 'expo-router';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 import { categories } from '../data/categories';
+
+const backgroundImage = require('../../assets/images/appBackground.jpg');
 
 export default function Home() {
   const router = useRouter();
@@ -11,28 +13,34 @@ export default function Home() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Selectează o categorie:</Text>
+    <ImageBackground source={backgroundImage} style={styles.background}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Selectează o categorie:</Text>
 
-      {Object.keys(categories).map((category) => (
-        <TouchableOpacity
-          key={category}
-          style={styles.categoryButton}
-          onPress={() => handleCategorySelect(category)}
-        >
-          <Text style={styles.buttonText}>{category.replace('_', ' ')}</Text>
-        </TouchableOpacity>
-      ))}
-    </View>
+        {Object.keys(categories).map((category) => (
+          <TouchableOpacity
+            key={category}
+            style={styles.categoryButton}
+            onPress={() => handleCategorySelect(category)}
+          >
+            <Text style={styles.buttonText}>{category.replace('_', ' ')}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1, // Asigură că imaginea acoperă întregul ecran
+    resizeMode: 'cover', // Asigură că imaginea acoperă complet fundalul
+    justifyContent: 'center',
+  },
   container: {
-    flex: 1,
+    flex: 1, // Permite containerului să ocupe întreg spațiul disponibil
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
     padding: 20,
   },
   title: {

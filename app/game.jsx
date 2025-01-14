@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Button,View,SafeAreaView, Text, StyleSheet, Image, TouchableOpacity, useWindowDimensions } from 'react-native';
+import { Button,View,SafeAreaView,ImageBackground, Text, StyleSheet, Image, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { categories } from './data/categories'; // importă fișierul cu categoriile
 import { ScrollView } from 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler'; // importă GestureHandlerRootView
@@ -7,6 +7,7 @@ import Svg, { Path } from 'react-native-svg';
 import { useLocalSearchParams } from 'expo-router';
 
 
+const backgroundImage = require('../assets/images/appBackground.jpg')
 
 export default function Game() {
   const { category } = useLocalSearchParams(); // Categoria primită din Home
@@ -81,6 +82,8 @@ if (!category) {
 
 
   return (
+    <ImageBackground source={backgroundImage} style={styles.background}>
+ 
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
         <Text style={styles.title}>Învăță să scrii cuvântul:</Text>
@@ -119,13 +122,14 @@ if (!category) {
           <Text style={styles.clearButtonText}>Șterge</Text>
         </TouchableOpacity>
         
-        <TouchableOpacity onPress={saveCanvasImage} style={styles.clearButton}>
+        {/* <TouchableOpacity onPress={saveCanvasImage} style={styles.clearButton}>
           <Text style={styles.clearButtonText}>Verifica</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
 
       </View>
     </GestureHandlerRootView>
+    </ImageBackground>
   );
 };
 
@@ -140,6 +144,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+  },
+  background: {
+    flex: 1,
+    resizeMode: 'cover', // Asigură afișarea completă
+    justifyContent: 'center',
   },
   image: {
     width: '50%', // 50% din lățimea ecranului

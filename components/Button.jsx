@@ -59,12 +59,13 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection: 'row',
+      color: 'black'
     },
     buttonIcon: {
         paddingRight: 8,
     },
     buttonLabel: {
-      color: 'white',
+      color: 'black',
       fontSize: 16,
     },
   });
