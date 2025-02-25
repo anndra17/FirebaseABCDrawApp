@@ -66,6 +66,14 @@ export default function Home() {
     setSelectedCategory(null); // Resetează selecția la null pentru a reveni la lista de categorii
   };
 
+  const handleResetWord = () => {
+    if (selectedCategory) {
+      const object = getRandomObject(selectedCategory);
+      setSelectedObject(object);
+      clearCanvas(); // Clear the canvas when resetting the word
+    }
+  };
+
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
       <View style={styles.container}>
@@ -75,6 +83,9 @@ export default function Home() {
             <View style={styles.container}>
               <TouchableOpacity onPress={handleBackToCategories} style={styles.backButton}>
                 <Text style={styles.backButtonText}>Înapoi</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleResetWord} style={styles.resetButton}>
+                <Text style={styles.resetButtonText}>Resetează cuvântul</Text>
               </TouchableOpacity>
               <Text style={styles.title}>Învăță să scrii cuvântul:</Text>
 
@@ -181,6 +192,20 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   backButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  resetButton: {
+    position: 'absolute',
+    top: 0,
+    right: 20,
+    backgroundColor: '#4caf50', // O culoare pentru butonul de resetare
+    padding: 10,
+    borderRadius: 10,
+    zIndex: 1000,
+  },
+  resetButtonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
