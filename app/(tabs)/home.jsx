@@ -3,7 +3,7 @@ import { categories } from '../data/categoryImages';
 import Svg, { Path } from 'react-native-svg';
 import { View, SafeAreaView, ImageBackground, Text, StyleSheet, TouchableOpacity, useWindowDimensions, Image } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import Icon from 'react-native-vector-icons/MaterialIcons'; // Import the icon library
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const backgroundImage = require('../../assets/images/appBackground.jpg');
 
@@ -13,6 +13,7 @@ export default function Home() {
   const [paths, setPaths] = useState([]); // Traseele desenate
   const [currentPath, setCurrentPath] = useState(''); // Traseul curent
   const [selectedObject, setSelectedObject] = useState(null);
+  const [isErasing, setIsErasing] = useState(false); // State for erasing mode
 
   // Referință pentru a detecta mișcările
   const startX = useRef(0);
@@ -34,11 +35,13 @@ export default function Home() {
 
   const handleTouchMove = (e) => {
     const { locationX, locationY } = e.nativeEvent;
-    setCurrentPath((prev) => `${prev} L${locationX},${locationY}`);
+    if (locationY >= 0 && locationY <= 200 && locationX >= 0 && locationX <= width - 40) { // Ensure drawing stays within the width and height of the drawing box
+      setCurrentPath((prev) => `${prev} L${locationX},${locationY}`);
+    }
   };
 
   const handleTouchEnd = () => {
-    setPaths((prevPaths) => [...prevPaths, currentPath]);
+    setPaths((prevPaths) => [...prevPaths, { path: currentPath, isErasing }]);
     setCurrentPath('');
   };
 
@@ -65,6 +68,10 @@ export default function Home() {
     }
   };
 
+  const toggleEraser = () => {
+    setIsErasing(!isErasing);
+  };
+
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
       <View style={styles.container}>
@@ -78,7 +85,6 @@ export default function Home() {
               <TouchableOpacity onPress={handleResetWord} style={styles.resetButton}>
                 <Icon name="refresh" size={24} color="white" /> 
               </TouchableOpacity>
-              {/* <Text style={styles.title}>Învăță să scrii cuvântul:</Text> */}
 
               {selectedObject && (
                 <>
@@ -97,18 +103,36 @@ export default function Home() {
                   onResponderRelease={handleTouchEnd}
                 >
                   {/* Desenează toate traseele existente */}
-                  {paths.map((path, index) => (
-                    <Path key={index} d={path} stroke="black" strokeWidth={2} fill="none" />
+                  {paths.map((pathObj, index) => (
+                    <Path
+                      key={index}
+                      d={pathObj.path}
+                      stroke={pathObj.isErasing ? "#f0f0f0" : "black"} // Use the same color as the drawing box background
+                      strokeWidth={pathObj.isErasing ? 10 : 2} // Thicker stroke for erasing
+                      fill="none"
+                    />
                   ))}
                   {/* Traseul curent */}
-                  {currentPath !== '' && <Path d={currentPath} stroke="black" strokeWidth={2} fill="none" />}
+                  {currentPath !== '' && (
+                    <Path
+                      d={currentPath}
+                      stroke={isErasing ? "#f0f0f0" : "black"} // Use the same color as the drawing box background
+                      strokeWidth={isErasing ? 10 : 2} // Thicker stroke for erasing
+                      fill="none"
+                    />
+                  )}
                 </Svg>
               </SafeAreaView>
 
-              {/* Buton pentru curățare */}
-              <TouchableOpacity onPress={clearCanvas} style={styles.clearButton}>
-                <Text style={styles.clearButtonText}>Șterge</Text>
-              </TouchableOpacity>
+              {/* Butoane pentru curățare și guma de șters */}
+              <View style={styles.buttonRow}>
+                <TouchableOpacity onPress={clearCanvas} style={styles.clearButton}>
+                  <Icon name="clear" size={24} color="white"/>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={toggleEraser} style={styles.eraserButton}>
+                  <Icon name={isErasing ? "brush" : "delete"} size={24} color="white" /> 
+                </TouchableOpacity>
+              </View>
             </View>
           </GestureHandlerRootView>
         ) : (
@@ -177,7 +201,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 20,
-    backgroundColor: '#4caf59', // O culoare pentru butonul de înapoi
+    backgroundColor: '#4caf59', 
     padding: 10,
     borderRadius: 10,
     zIndex: 1000,
@@ -190,30 +214,42 @@ const styles = StyleSheet.create({
   resetButton: {
     position: 'absolute',
     top: 0,
-    right: 20,
+    right: 60,
     backgroundColor: '#4caf50',
     padding: 10,
     borderRadius: 10,
     zIndex: 1000,
   },
-  drawingBox: {
-    width: '100%',
-    height: 140,
-    borderColor: '#bcbcbc',
-    borderWidth: 1,
-    borderRadius: 10,
-    backgroundColor: '#f0f0f0',
-    marginBottom: 20,
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+    marginTop: 20,
   },
   clearButton: {
     backgroundColor: '#ff5757',
     padding: 10,
     borderRadius: 5,
+    marginRight: 10,
   },
   clearButtonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  eraserButton: {
+    backgroundColor: 'pink',
+    padding: 10,
+    borderRadius: 5,
+  },
+  drawingBox: {
+    width: '100%',
+    height: 200, // Ensure this matches the height used in the handleTouchMove check
+    borderColor: '#bcbcbc',
+    borderWidth: 1,
+    borderRadius: 10,
+    backgroundColor: '#f0f0f0',
+    marginBottom: 20,
   },
   objectName: {
     fontSize: 30,
