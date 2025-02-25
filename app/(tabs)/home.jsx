@@ -21,15 +21,7 @@ export default function Home() {
   const startX = useRef(0);
   const startY = useRef(0);
 
-  useEffect(() => {
-    // Get the list of available voices and select a friendly one
-    const getVoices = async () => {
-      const voices = await Speech.getAvailableVoicesAsync();
-      const friendlyVoice = voices.find(voice => voice.name.includes('Google') || voice.name.includes('Siri'));
-      setFriendlyVoice(friendlyVoice);
-    };
-    getVoices();
-  }, []);
+  
 
   // Funcție care selectează un obiect aleatoriu dintr-o categorie
   const getRandomObject = (category) => {
@@ -87,9 +79,8 @@ export default function Home() {
   const readWord = () => {
     if (selectedObject) {
       const options = {
-        voice: friendlyVoice ? friendlyVoice.identifier : undefined,
-        pitch: 1.2,
-        rate: 0.9,
+        pitch: 1.5,
+        rate: 0.8,
       };
       Speech.speak(selectedObject.nume, options);
     }
