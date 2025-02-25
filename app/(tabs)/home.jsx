@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { categories } from '../data/categoryImages';
 import Svg, { Path } from 'react-native-svg';
-import { View, SafeAreaView, ImageBackground, Text, StyleSheet, TouchableOpacity, useWindowDimensions, Image } from 'react-native';
+import { View, SafeAreaView, ImageBackground, Text, StyleSheet, TouchableOpacity, useWindowDimensions, Image, Alert } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import * as Speech from 'expo-speech'; // Import the Speech library
 
 const backgroundImage = require('../../assets/images/appBackground.jpg');
 
@@ -14,10 +15,21 @@ export default function Home() {
   const [currentPath, setCurrentPath] = useState(''); // Traseul curent
   const [selectedObject, setSelectedObject] = useState(null);
   const [isErasing, setIsErasing] = useState(false); // State for erasing mode
+  const [friendlyVoice, setFriendlyVoice] = useState(null); // State for the friendly voice
 
   // Referință pentru a detecta mișcările
   const startX = useRef(0);
   const startY = useRef(0);
+
+  useEffect(() => {
+    // Get the list of available voices and select a friendly one
+    const getVoices = async () => {
+      const voices = await Speech.getAvailableVoicesAsync();
+      const friendlyVoice = voices.find(voice => voice.name.includes('Google') || voice.name.includes('Siri'));
+      setFriendlyVoice(friendlyVoice);
+    };
+    getVoices();
+  }, []);
 
   // Funcție care selectează un obiect aleatoriu dintr-o categorie
   const getRandomObject = (category) => {
@@ -72,6 +84,17 @@ export default function Home() {
     setIsErasing(!isErasing);
   };
 
+  const readWord = () => {
+    if (selectedObject) {
+      const options = {
+        voice: friendlyVoice ? friendlyVoice.identifier : undefined,
+        pitch: 1.2,
+        rate: 0.9,
+      };
+      Speech.speak(selectedObject.nume, options);
+    }
+  };
+
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
       <View style={styles.container}>
@@ -124,13 +147,16 @@ export default function Home() {
                 </Svg>
               </SafeAreaView>
 
-              {/* Butoane pentru curățare și guma de șters */}
+              {/* Butoane pentru curățare, guma de șters și citire cuvânt */}
               <View style={styles.buttonRow}>
                 <TouchableOpacity onPress={clearCanvas} style={styles.clearButton}>
                   <Icon name="clear" size={24} color="white"/>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={toggleEraser} style={styles.eraserButton}>
                   <Icon name={isErasing ? "brush" : "delete"} size={24} color="white" /> 
+                </TouchableOpacity>
+                <TouchableOpacity onPress={readWord} style={styles.readButton}>
+                  <Icon name="volume-up" size={24} color="white" /> 
                 </TouchableOpacity>
               </View>
             </View>
@@ -201,7 +227,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 20,
-    backgroundColor: '#4caf59', 
+    backgroundColor: '#4caf59', // O culoare pentru butonul de înapoi
     padding: 10,
     borderRadius: 10,
     zIndex: 1000,
@@ -214,7 +240,7 @@ const styles = StyleSheet.create({
   resetButton: {
     position: 'absolute',
     top: 0,
-    right: 60,
+    right: 20,
     backgroundColor: '#4caf50',
     padding: 10,
     borderRadius: 10,
@@ -239,6 +265,11 @@ const styles = StyleSheet.create({
   },
   eraserButton: {
     backgroundColor: 'pink',
+    padding: 10,
+    borderRadius: 5,
+  },
+  readButton: {
+    backgroundColor: 'orange',
     padding: 10,
     borderRadius: 5,
   },
