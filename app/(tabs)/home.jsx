@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { categories } from '../data/categories';
+import { categories } from '../data/categoryImages';
 import Svg, { Path } from 'react-native-svg';
-import { View, SafeAreaView, ImageBackground, Text, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
+import { View, SafeAreaView, ImageBackground, Text, StyleSheet, TouchableOpacity, useWindowDimensions, Image } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const backgroundImage = require('../../assets/images/appBackground.jpg');
@@ -78,7 +78,12 @@ export default function Home() {
               </TouchableOpacity>
               <Text style={styles.title}>Învăță să scrii cuvântul:</Text>
 
-              {selectedObject && <Text style={styles.objectName}>{selectedObject.nume}</Text>}
+              {selectedObject && (
+                <>
+                  <Image source={selectedObject.imagine} style={styles.image} />
+                  <Text style={styles.objectName}>{selectedObject.nume.toUpperCase()}</Text>
+                </>
+              )}
 
               {/* Canvas pentru desen */}
               <SafeAreaView style={styles.drawingBox}>
@@ -158,8 +163,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: 200,
-    height: 200,
+    width: 150,
+    height: 150,
     marginVertical: 20,
   },
   word: {
@@ -168,11 +173,12 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 40,
+    top: 0,
     left: 20,
-    backgroundColor: '#ff6347', // O culoare pentru butonul de înapoi
+    backgroundColor: 'green', // O culoare pentru butonul de înapoi
     padding: 10,
     borderRadius: 10,
+    zIndex: 1000,
   },
   backButtonText: {
     color: 'white',
@@ -181,7 +187,7 @@ const styles = StyleSheet.create({
   },
   drawingBox: {
     width: '100%',
-    height: 200,
+    height: 140,
     borderColor: '#bcbcbc',
     borderWidth: 1,
     borderRadius: 10,
@@ -197,5 +203,10 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  objectName: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
 });
