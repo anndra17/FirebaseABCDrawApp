@@ -2,7 +2,7 @@ export const categories = {
     litere:  [
         { nume: 'A', imagine: '../../assets/images/letters/A.png' },
         { nume: 'Ă', imagine: '../../assets/images/letters/Ă.png' },
-        { nume: 'Â', imagine: '../assets/images/letters/Â.png' },
+        { nume: 'Â', imagine: '../../assets/images/letters/Â.png' },
         { nume: 'B', imagine: '../../assets/images/letters/B.png' },
         { nume: 'C', imagine: '../../assets/images/letters/C.png' },
         { nume: 'D', imagine: '../../assets/images/letters/D.png' },
