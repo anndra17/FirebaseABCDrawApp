@@ -3,6 +3,7 @@ import { categories } from '../data/categoryImages';
 import Svg, { Path } from 'react-native-svg';
 import { View, SafeAreaView, ImageBackground, Text, StyleSheet, TouchableOpacity, useWindowDimensions, Image } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/MaterialIcons'; // Import the icon library
 
 const backgroundImage = require('../../assets/images/appBackground.jpg');
 
@@ -23,16 +24,6 @@ export default function Home() {
     const randomIndex = Math.floor(Math.random() * objects.length);
     return objects[randomIndex];
   };
-
-  useEffect(() => {
-    // Selectează aleatoriu o categorie
-    const categoryKeys = Object.keys(categories);
-    const randomCategory = categoryKeys[Math.floor(Math.random() * categoryKeys.length)];
-
-    setSelectedCategory(randomCategory);
-    const object = getRandomObject(randomCategory);
-    setSelectedObject(object);
-  }, []);
 
   const handleTouchStart = (e) => {
     const { locationX, locationY } = e.nativeEvent;
@@ -82,12 +73,12 @@ export default function Home() {
           <GestureHandlerRootView style={{ flex: 1 }}>
             <View style={styles.container}>
               <TouchableOpacity onPress={handleBackToCategories} style={styles.backButton}>
-                <Text style={styles.backButtonText}>Înapoi</Text>
+                <Icon name="arrow-back" size={24} color="white" /> 
               </TouchableOpacity>
               <TouchableOpacity onPress={handleResetWord} style={styles.resetButton}>
-                <Text style={styles.resetButtonText}>Resetează cuvântul</Text>
+                <Icon name="refresh" size={24} color="white" /> 
               </TouchableOpacity>
-              <Text style={styles.title}>Învăță să scrii cuvântul:</Text>
+              {/* <Text style={styles.title}>Învăță să scrii cuvântul:</Text> */}
 
               {selectedObject && (
                 <>
@@ -186,7 +177,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 20,
-    backgroundColor: 'green', // O culoare pentru butonul de înapoi
+    backgroundColor: '#4caf59', // O culoare pentru butonul de înapoi
     padding: 10,
     borderRadius: 10,
     zIndex: 1000,
@@ -200,15 +191,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     right: 20,
-    backgroundColor: '#4caf50', // O culoare pentru butonul de resetare
+    backgroundColor: '#4caf50',
     padding: 10,
     borderRadius: 10,
     zIndex: 1000,
-  },
-  resetButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
   drawingBox: {
     width: '100%',
