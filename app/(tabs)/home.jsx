@@ -1,19 +1,69 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
 import { categories } from '../data/categories';
-import WritingCanvas from '../../components/WritingCanvas'; 
+import Svg, { Path } from 'react-native-svg';
+import { View, SafeAreaView, ImageBackground, Text, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const backgroundImage = require('../../assets/images/appBackground.jpg');
 
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const { width, height } = useWindowDimensions();
+  const [paths, setPaths] = useState([]); // Traseele desenate
+  const [currentPath, setCurrentPath] = useState(''); // Traseul curent
+  const [selectedObject, setSelectedObject] = useState(null);
+
+  // Referință pentru a detecta mișcările
+  const startX = useRef(0);
+  const startY = useRef(0);
+
+  // Funcție care selectează un obiect aleatoriu dintr-o categorie
+  const getRandomObject = (category) => {
+    const objects = categories[category];
+    const randomIndex = Math.floor(Math.random() * objects.length);
+    return objects[randomIndex];
+  };
+
+  useEffect(() => {
+    // Selectează aleatoriu o categorie
+    const categoryKeys = Object.keys(categories);
+    const randomCategory = categoryKeys[Math.floor(Math.random() * categoryKeys.length)];
+
+    setSelectedCategory(randomCategory);
+    const object = getRandomObject(randomCategory);
+    setSelectedObject(object);
+  }, []);
+
+  const handleTouchStart = (e) => {
+    const { locationX, locationY } = e.nativeEvent;
+    startX.current = locationX;
+    startY.current = locationY;
+    setCurrentPath(`M${locationX},${locationY}`);
+  };
+
+  const handleTouchMove = (e) => {
+    const { locationX, locationY } = e.nativeEvent;
+    setCurrentPath((prev) => `${prev} L${locationX},${locationY}`);
+  };
+
+  const handleTouchEnd = () => {
+    setPaths((prevPaths) => [...prevPaths, currentPath]);
+    setCurrentPath('');
+  };
+
+  const clearCanvas = () => {
+    setPaths([]);
+  };
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
+    const object = getRandomObject(category);
+    setSelectedObject(object);
   };
 
   const handleBackToCategories = () => {
-    setSelectedCategory(null);  // Resetează selecția la null pentru a reveni la lista de categorii
+    clearCanvas(); // Clear the canvas when going back to categories
+    setSelectedCategory(null); // Resetează selecția la null pentru a reveni la lista de categorii
   };
 
   return (
@@ -21,20 +71,39 @@ export default function Home() {
       <View style={styles.container}>
         {selectedCategory ? (
           // Dacă o categorie este selectată, afișează conținutul asociat
-          <View style={styles.gameContainer}>
-            <TouchableOpacity 
-              style={styles.backButton} 
-              onPress={handleBackToCategories}
-            >
-              <Text style={styles.buttonText}>Înapoi</Text>
-            </TouchableOpacity>
-            <Text style={styles.title}>Categoria: {selectedCategory.replace('_', ' ')}</Text>
-            <Image source={{ uri: categories[selectedCategory].image }} style={styles.image} />
-            <Text style={styles.word}>{categories[selectedCategory].word}</Text>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <View style={styles.container}>
+              <TouchableOpacity onPress={handleBackToCategories} style={styles.backButton}>
+                <Text style={styles.backButtonText}>Înapoi</Text>
+              </TouchableOpacity>
+              <Text style={styles.title}>Învăță să scrii cuvântul:</Text>
 
-            {/* Aici poți adăuga canvas-ul pentru scris */}
-            <WritingCanvas selectedCategory={selectedCategory} />
-          </View>
+              {selectedObject && <Text style={styles.objectName}>{selectedObject.nume}</Text>}
+
+              {/* Canvas pentru desen */}
+              <SafeAreaView style={styles.drawingBox}>
+                <Svg
+                  style={{ width: width - 40, height: 200 }}
+                  onStartShouldSetResponder={() => true}
+                  onResponderGrant={handleTouchStart}
+                  onResponderMove={handleTouchMove}
+                  onResponderRelease={handleTouchEnd}
+                >
+                  {/* Desenează toate traseele existente */}
+                  {paths.map((path, index) => (
+                    <Path key={index} d={path} stroke="black" strokeWidth={2} fill="none" />
+                  ))}
+                  {/* Traseul curent */}
+                  {currentPath !== '' && <Path d={currentPath} stroke="black" strokeWidth={2} fill="none" />}
+                </Svg>
+              </SafeAreaView>
+
+              {/* Buton pentru curățare */}
+              <TouchableOpacity onPress={clearCanvas} style={styles.clearButton}>
+                <Text style={styles.clearButtonText}>Șterge</Text>
+              </TouchableOpacity>
+            </View>
+          </GestureHandlerRootView>
         ) : (
           // Dacă nu s-a selectat nicio categorie, afișează butoanele
           <>
@@ -98,9 +167,35 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
     backgroundColor: '#ff6347', // O culoare pentru butonul de înapoi
     padding: 10,
     borderRadius: 10,
+  },
+  backButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  drawingBox: {
+    width: '100%',
+    height: 200,
+    borderColor: '#bcbcbc',
+    borderWidth: 1,
+    borderRadius: 10,
+    backgroundColor: '#f0f0f0',
     marginBottom: 20,
+  },
+  clearButton: {
+    backgroundColor: '#ff5757',
+    padding: 10,
+    borderRadius: 5,
+  },
+  clearButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

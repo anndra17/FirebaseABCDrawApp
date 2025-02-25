@@ -1,6 +1,6 @@
 // WritingCanvas.jsx
-import React, { useState, useRef } from 'react';
-import { View, StyleSheet, SafeAreaView } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View,SafeAreaView, Text, StyleSheet, Image, TouchableOpacity, useWindowDimensions } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
 export default function WritingCanvas({ width, height, onPathsChange }) {
