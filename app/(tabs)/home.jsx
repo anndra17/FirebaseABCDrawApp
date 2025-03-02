@@ -21,7 +21,15 @@ export default function Home() {
   const startX = useRef(0);
   const startY = useRef(0);
 
-  
+  useEffect(() => {
+    // Get the list of available voices and select a friendly one
+    const getVoices = async () => {
+      const voices = await Speech.getAvailableVoicesAsync();
+      const friendlyVoice = voices.find(voice => voice.name.includes('Google') || voice.name.includes('Siri'));
+      setFriendlyVoice(friendlyVoice);
+    };
+    getVoices();
+  }, []);
 
   // Funcție care selectează un obiect aleatoriu dintr-o categorie
   const getRandomObject = (category) => {
@@ -78,11 +86,15 @@ export default function Home() {
 
   const readWord = () => {
     if (selectedObject) {
+      console.log('Reading word:', selectedObject.nume); // Add logging
       const options = {
         pitch: 1.5,
         rate: 0.8,
+        voice: friendlyVoice ? friendlyVoice.identifier : undefined,
       };
       Speech.speak(selectedObject.nume, options);
+    } else {
+      console.log('No selected object'); // Add logging
     }
   };
 
@@ -231,7 +243,7 @@ const styles = StyleSheet.create({
   resetButton: {
     position: 'absolute',
     top: 0,
-    right: 20,
+    right: 60,
     backgroundColor: '#4caf50',
     padding: 10,
     borderRadius: 10,

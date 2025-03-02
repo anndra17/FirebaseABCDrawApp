@@ -11,7 +11,7 @@ interface CategoryImage {
     [key: string]: CategoryImage[]; // Permite accesul dinamic pe baza unui string
   }
   
-  export const categories: Categories = {
+  export  const categories: Categories = {
       litere: [
         { nume: 'A', imagine: require('../../assets/images/letters/A.png') },
         { nume: 'Ă', imagine: require('../../assets/images/letters/Ă.png') },
@@ -77,3 +77,4 @@ interface CategoryImage {
 
 
   
+export default categories;
